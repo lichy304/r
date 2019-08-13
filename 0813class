@@ -1,0 +1,888 @@
+
+R version 3.6.1 (2019-07-05) -- "Action of the Toes"
+Copyright (C) 2019 The R Foundation for Statistical Computing
+Platform: x86_64-w64-mingw32/x64 (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> library(dplyr)
+
+다음의 패키지를 부착합니다: ‘dplyr’
+
+The following objects are masked from ‘package:stats’:
+
+    filter, lag
+
+The following objects are masked from ‘package:base’:
+
+    intersect, setdiff, setequal, union
+
+> install.packages("dplyr")
+Error in install.packages : Updating loaded packages
+> install.packages("dplyr")
+WARNING: Rtools is required to build R packages but is not currently installed. Please download and install the appropriate version of Rtools before proceeding:
+
+https://cran.rstudio.com/bin/windows/Rtools/
+Warning in install.packages :
+  package ‘dplyr’ is in use and will not be installed
+> library(dplyr)
+> exam <- read.csv("csv_exam.csv")
+> exam
+   id class math english science
+1   1     1   50      98      50
+2   2     1   60      97      60
+3   3     1   45      86      78
+4   4     1   30      98      58
+5   5     2   25      80      65
+6   6     2   50      89      98
+7   7     2   80      90      45
+8   8     2   90      78      25
+9   9     3   20      98      15
+10 10     3   50      98      45
+11 11     3   65      65      65
+12 12     3   45      85      32
+13 13     4   46      98      65
+14 14     4   48      87      12
+15 15     4   75      56      78
+16 16     4   58      98      65
+17 17     5   65      68      98
+18 18     5   80      78      90
+19 19     5   89      68      87
+20 20     5   78      83      58
+> exam %>%> filter(class==1)
+Error: unexpected '>' in "exam %>%>"
+> exam %>% filter (class==1)
+  id class math english science
+1  1     1   50      98      50
+2  2     1   60      97      60
+3  3     1   45      86      78
+4  4     1   30      98      58
+> exam%>%filter(class==2)
+  id class math english science
+1  5     2   25      80      65
+2  6     2   50      89      98
+3  7     2   80      90      45
+4  8     2   90      78      25
+> exam%>%filter(class!=1)
+   id class math english science
+1   5     2   25      80      65
+2   6     2   50      89      98
+3   7     2   80      90      45
+4   8     2   90      78      25
+5   9     3   20      98      15
+6  10     3   50      98      45
+7  11     3   65      65      65
+8  12     3   45      85      32
+9  13     4   46      98      65
+10 14     4   48      87      12
+11 15     4   75      56      78
+12 16     4   58      98      65
+13 17     5   65      68      98
+14 18     5   80      78      90
+15 19     5   89      68      87
+16 20     5   78      83      58
+> exam%>%filter(class!=3)
+   id class math english science
+1   1     1   50      98      50
+2   2     1   60      97      60
+3   3     1   45      86      78
+4   4     1   30      98      58
+5   5     2   25      80      65
+6   6     2   50      89      98
+7   7     2   80      90      45
+8   8     2   90      78      25
+9  13     4   46      98      65
+10 14     4   48      87      12
+11 15     4   75      56      78
+12 16     4   58      98      65
+13 17     5   65      68      98
+14 18     5   80      78      90
+15 19     5   89      68      87
+16 20     5   78      83      58
+> exam %>% filter(math>50)
+   id class math english science
+1   2     1   60      97      60
+2   7     2   80      90      45
+3   8     2   90      78      25
+4  11     3   65      65      65
+5  15     4   75      56      78
+6  16     4   58      98      65
+7  17     5   65      68      98
+8  18     5   80      78      90
+9  19     5   89      68      87
+10 20     5   78      83      58
+> exam %>% filter(math<50)
+  id class math english science
+1  3     1   45      86      78
+2  4     1   30      98      58
+3  5     2   25      80      65
+4  9     3   20      98      15
+5 12     3   45      85      32
+6 13     4   46      98      65
+7 14     4   48      87      12
+> exam %>% filter(english>=80)
+   id class math english science
+1   1     1   50      98      50
+2   2     1   60      97      60
+3   3     1   45      86      78
+4   4     1   30      98      58
+5   5     2   25      80      65
+6   6     2   50      89      98
+7   7     2   80      90      45
+8   9     3   20      98      15
+9  10     3   50      98      45
+10 12     3   45      85      32
+11 13     4   46      98      65
+12 14     4   48      87      12
+13 16     4   58      98      65
+14 20     5   78      83      58
+> exam %>% filter(english<=80)
+  id class math english science
+1  5     2   25      80      65
+2  8     2   90      78      25
+3 11     3   65      65      65
+4 15     4   75      56      78
+5 17     5   65      68      98
+6 18     5   80      78      90
+7 19     5   89      68      87
+> ##조건을 복수로
+> exam %>% filter(class==1& math>=50)
+  id class math english science
+1  1     1   50      98      50
+2  2     1   60      97      60
+> exam %>% filter(class==2&english>=80)
+  id class math english science
+1  5     2   25      80      65
+2  6     2   50      89      98
+3  7     2   80      90      45
+> exam %>% filter(class==1|class==3|class==5)
+   id class math english science
+1   1     1   50      98      50
+2   2     1   60      97      60
+3   3     1   45      86      78
+4   4     1   30      98      58
+5   9     3   20      98      15
+6  10     3   50      98      45
+7  11     3   65      65      65
+8  12     3   45      85      32
+9  17     5   65      68      98
+10 18     5   80      78      90
+11 19     5   89      68      87
+12 20     5   78      83      58
+> exam %>% filter(math>=90|english>=90)
+  id class math english science
+1  1     1   50      98      50
+2  2     1   60      97      60
+3  4     1   30      98      58
+4  7     2   80      90      45
+5  8     2   90      78      25
+6  9     3   20      98      15
+7 10     3   50      98      45
+8 13     4   46      98      65
+9 16     4   58      98      65
+> exam %>% filter(english<90|science<50)
+   id class math english science
+1   3     1   45      86      78
+2   5     2   25      80      65
+3   6     2   50      89      98
+4   7     2   80      90      45
+5   8     2   90      78      25
+6   9     3   20      98      15
+7  10     3   50      98      45
+8  11     3   65      65      65
+9  12     3   45      85      32
+10 14     4   48      87      12
+11 15     4   75      56      78
+12 17     5   65      68      98
+13 18     5   80      78      90
+14 19     5   89      68      87
+15 20     5   78      83      58
+> exam %>% filter(class==1|class==3|class==5)
+   id class math english science
+1   1     1   50      98      50
+2   2     1   60      97      60
+3   3     1   45      86      78
+4   4     1   30      98      58
+5   9     3   20      98      15
+6  10     3   50      98      45
+7  11     3   65      65      65
+8  12     3   45      85      32
+9  17     5   65      68      98
+10 18     5   80      78      90
+11 19     5   89      68      87
+12 20     5   78      83      58
+> exam %>% filter(class%in%c(1,3,5))
+   id class math english science
+1   1     1   50      98      50
+2   2     1   60      97      60
+3   3     1   45      86      78
+4   4     1   30      98      58
+5   9     3   20      98      15
+6  10     3   50      98      45
+7  11     3   65      65      65
+8  12     3   45      85      32
+9  17     5   65      68      98
+10 18     5   80      78      90
+11 19     5   89      68      87
+12 20     5   78      83      58
+> class1 <- exam %>% filter(class==1)
+> class2 <- exam %>% filter(class==2)
+> mean(class$math)
+Error in class$math : object of type 'builtin' is not subsettable
+> mean(class1$math)
+[1] 46.25
+> mean(class2$math)
+[1] 61.25
+> mpg
+Error: object 'mpg' not found
+> mpg <- as.data.frame(ggplot2::mpg)
+> exam %>% filter(displ<=4|displ>=5)
+Error: object 'displ' not found
+> mpg
+   manufacturer               model displ year cyl
+1          audi                  a4   1.8 1999   4
+2          audi                  a4   1.8 1999   4
+3          audi                  a4   2.0 2008   4
+4          audi                  a4   2.0 2008   4
+5          audi                  a4   2.8 1999   6
+6          audi                  a4   2.8 1999   6
+7          audi                  a4   3.1 2008   6
+8          audi          a4 quattro   1.8 1999   4
+9          audi          a4 quattro   1.8 1999   4
+10         audi          a4 quattro   2.0 2008   4
+11         audi          a4 quattro   2.0 2008   4
+12         audi          a4 quattro   2.8 1999   6
+13         audi          a4 quattro   2.8 1999   6
+14         audi          a4 quattro   3.1 2008   6
+15         audi          a4 quattro   3.1 2008   6
+16         audi          a6 quattro   2.8 1999   6
+17         audi          a6 quattro   3.1 2008   6
+18         audi          a6 quattro   4.2 2008   8
+19    chevrolet  c1500 suburban 2wd   5.3 2008   8
+20    chevrolet  c1500 suburban 2wd   5.3 2008   8
+21    chevrolet  c1500 suburban 2wd   5.3 2008   8
+22    chevrolet  c1500 suburban 2wd   5.7 1999   8
+23    chevrolet  c1500 suburban 2wd   6.0 2008   8
+24    chevrolet            corvette   5.7 1999   8
+25    chevrolet            corvette   5.7 1999   8
+26    chevrolet            corvette   6.2 2008   8
+27    chevrolet            corvette   6.2 2008   8
+28    chevrolet            corvette   7.0 2008   8
+29    chevrolet     k1500 tahoe 4wd   5.3 2008   8
+30    chevrolet     k1500 tahoe 4wd   5.3 2008   8
+31    chevrolet     k1500 tahoe 4wd   5.7 1999   8
+32    chevrolet     k1500 tahoe 4wd   6.5 1999   8
+33    chevrolet              malibu   2.4 1999   4
+34    chevrolet              malibu   2.4 2008   4
+35    chevrolet              malibu   3.1 1999   6
+36    chevrolet              malibu   3.5 2008   6
+37    chevrolet              malibu   3.6 2008   6
+38        dodge         caravan 2wd   2.4 1999   4
+39        dodge         caravan 2wd   3.0 1999   6
+40        dodge         caravan 2wd   3.3 1999   6
+41        dodge         caravan 2wd   3.3 1999   6
+42        dodge         caravan 2wd   3.3 2008   6
+43        dodge         caravan 2wd   3.3 2008   6
+44        dodge         caravan 2wd   3.3 2008   6
+45        dodge         caravan 2wd   3.8 1999   6
+46        dodge         caravan 2wd   3.8 1999   6
+47        dodge         caravan 2wd   3.8 2008   6
+48        dodge         caravan 2wd   4.0 2008   6
+49        dodge   dakota pickup 4wd   3.7 2008   6
+50        dodge   dakota pickup 4wd   3.7 2008   6
+51        dodge   dakota pickup 4wd   3.9 1999   6
+52        dodge   dakota pickup 4wd   3.9 1999   6
+53        dodge   dakota pickup 4wd   4.7 2008   8
+54        dodge   dakota pickup 4wd   4.7 2008   8
+55        dodge   dakota pickup 4wd   4.7 2008   8
+56        dodge   dakota pickup 4wd   5.2 1999   8
+57        dodge   dakota pickup 4wd   5.2 1999   8
+58        dodge         durango 4wd   3.9 1999   6
+59        dodge         durango 4wd   4.7 2008   8
+60        dodge         durango 4wd   4.7 2008   8
+61        dodge         durango 4wd   4.7 2008   8
+62        dodge         durango 4wd   5.2 1999   8
+63        dodge         durango 4wd   5.7 2008   8
+64        dodge         durango 4wd   5.9 1999   8
+65        dodge ram 1500 pickup 4wd   4.7 2008   8
+66        dodge ram 1500 pickup 4wd   4.7 2008   8
+67        dodge ram 1500 pickup 4wd   4.7 2008   8
+68        dodge ram 1500 pickup 4wd   4.7 2008   8
+69        dodge ram 1500 pickup 4wd   4.7 2008   8
+70        dodge ram 1500 pickup 4wd   4.7 2008   8
+71        dodge ram 1500 pickup 4wd   5.2 1999   8
+72        dodge ram 1500 pickup 4wd   5.2 1999   8
+73        dodge ram 1500 pickup 4wd   5.7 2008   8
+74        dodge ram 1500 pickup 4wd   5.9 1999   8
+75         ford      expedition 2wd   4.6 1999   8
+76         ford      expedition 2wd   5.4 1999   8
+77         ford      expedition 2wd   5.4 2008   8
+78         ford        explorer 4wd   4.0 1999   6
+79         ford        explorer 4wd   4.0 1999   6
+80         ford        explorer 4wd   4.0 1999   6
+81         ford        explorer 4wd   4.0 2008   6
+82         ford        explorer 4wd   4.6 2008   8
+83         ford        explorer 4wd   5.0 1999   8
+84         ford     f150 pickup 4wd   4.2 1999   6
+85         ford     f150 pickup 4wd   4.2 1999   6
+86         ford     f150 pickup 4wd   4.6 1999   8
+87         ford     f150 pickup 4wd   4.6 1999   8
+88         ford     f150 pickup 4wd   4.6 2008   8
+89         ford     f150 pickup 4wd   5.4 1999   8
+90         ford     f150 pickup 4wd   5.4 2008   8
+        trans drv cty hwy fl   class
+1    auto(l5)   f  18  29  p compact
+2  manual(m5)   f  21  29  p compact
+3  manual(m6)   f  20  31  p compact
+4    auto(av)   f  21  30  p compact
+5    auto(l5)   f  16  26  p compact
+6  manual(m5)   f  18  26  p compact
+7    auto(av)   f  18  27  p compact
+8  manual(m5)   4  18  26  p compact
+9    auto(l5)   4  16  25  p compact
+10 manual(m6)   4  20  28  p compact
+11   auto(s6)   4  19  27  p compact
+12   auto(l5)   4  15  25  p compact
+13 manual(m5)   4  17  25  p compact
+14   auto(s6)   4  17  25  p compact
+15 manual(m6)   4  15  25  p compact
+16   auto(l5)   4  15  24  p midsize
+17   auto(s6)   4  17  25  p midsize
+18   auto(s6)   4  16  23  p midsize
+19   auto(l4)   r  14  20  r     suv
+20   auto(l4)   r  11  15  e     suv
+21   auto(l4)   r  14  20  r     suv
+22   auto(l4)   r  13  17  r     suv
+23   auto(l4)   r  12  17  r     suv
+24 manual(m6)   r  16  26  p 2seater
+25   auto(l4)   r  15  23  p 2seater
+26 manual(m6)   r  16  26  p 2seater
+27   auto(s6)   r  15  25  p 2seater
+28 manual(m6)   r  15  24  p 2seater
+29   auto(l4)   4  14  19  r     suv
+30   auto(l4)   4  11  14  e     suv
+31   auto(l4)   4  11  15  r     suv
+32   auto(l4)   4  14  17  d     suv
+33   auto(l4)   f  19  27  r midsize
+34   auto(l4)   f  22  30  r midsize
+35   auto(l4)   f  18  26  r midsize
+36   auto(l4)   f  18  29  r midsize
+37   auto(s6)   f  17  26  r midsize
+38   auto(l3)   f  18  24  r minivan
+39   auto(l4)   f  17  24  r minivan
+40   auto(l4)   f  16  22  r minivan
+41   auto(l4)   f  16  22  r minivan
+42   auto(l4)   f  17  24  r minivan
+43   auto(l4)   f  17  24  r minivan
+44   auto(l4)   f  11  17  e minivan
+45   auto(l4)   f  15  22  r minivan
+46   auto(l4)   f  15  21  r minivan
+47   auto(l6)   f  16  23  r minivan
+48   auto(l6)   f  16  23  r minivan
+49 manual(m6)   4  15  19  r  pickup
+50   auto(l4)   4  14  18  r  pickup
+51   auto(l4)   4  13  17  r  pickup
+52 manual(m5)   4  14  17  r  pickup
+53   auto(l5)   4  14  19  r  pickup
+54   auto(l5)   4  14  19  r  pickup
+55   auto(l5)   4   9  12  e  pickup
+56 manual(m5)   4  11  17  r  pickup
+57   auto(l4)   4  11  15  r  pickup
+58   auto(l4)   4  13  17  r     suv
+59   auto(l5)   4  13  17  r     suv
+60   auto(l5)   4   9  12  e     suv
+61   auto(l5)   4  13  17  r     suv
+62   auto(l4)   4  11  16  r     suv
+63   auto(l5)   4  13  18  r     suv
+64   auto(l4)   4  11  15  r     suv
+65 manual(m6)   4  12  16  r  pickup
+66   auto(l5)   4   9  12  e  pickup
+67   auto(l5)   4  13  17  r  pickup
+68   auto(l5)   4  13  17  r  pickup
+69 manual(m6)   4  12  16  r  pickup
+70 manual(m6)   4   9  12  e  pickup
+71   auto(l4)   4  11  15  r  pickup
+72 manual(m5)   4  11  16  r  pickup
+73   auto(l5)   4  13  17  r  pickup
+74   auto(l4)   4  11  15  r  pickup
+75   auto(l4)   r  11  17  r     suv
+76   auto(l4)   r  11  17  r     suv
+77   auto(l6)   r  12  18  r     suv
+78   auto(l5)   4  14  17  r     suv
+79 manual(m5)   4  15  19  r     suv
+80   auto(l5)   4  14  17  r     suv
+81   auto(l5)   4  13  19  r     suv
+82   auto(l6)   4  13  19  r     suv
+83   auto(l4)   4  13  17  r     suv
+84   auto(l4)   4  14  17  r  pickup
+85 manual(m5)   4  14  17  r  pickup
+86 manual(m5)   4  13  16  r  pickup
+87   auto(l4)   4  13  16  r  pickup
+88   auto(l4)   4  13  17  r  pickup
+89   auto(l4)   4  11  15  r  pickup
+90   auto(l4)   4  13  17  r  pickup
+ [ reached 'max' / getOption("max.print") -- omitted 144 rows ]
+> mpg_a <- mpg %>% filter(displ<=4)
+> mpg_b <- mpg %>% filter(displ>=5)
+> mean(mpg_a$hwy)
+[1] 25.96319
+> mean(mpg_a$hwy)
+[1] 25.96319
+> mean(mpg_b$hwy)
+[1] 18.07895
+> mpg_audi <- mpg %>% filter(manufacturer=="audi")
+> mpg_toyota <- mpg %>% filter(manufacturer=="toyota")
+> mean(mpg_audi$cty)
+[1] 17.61111
+> mean(mpg_toyota$cty)
+[1] 18.52941
+> mpg_new <- mpg %>% filter(manufacturer %>% c("chverolet","ford","honda"))
+Error: Argument 2 filter condition does not evaluate to a logical vector
+> exam %>% select(math)
+   math
+1    50
+2    60
+3    45
+4    30
+5    25
+6    50
+7    80
+8    90
+9    20
+10   50
+11   65
+12   45
+13   46
+14   48
+15   75
+16   58
+17   65
+18   80
+19   89
+20   78
+> exam %>% select(english)
+   english
+1       98
+2       97
+3       86
+4       98
+5       80
+6       89
+7       90
+8       78
+9       98
+10      98
+11      65
+12      85
+13      98
+14      87
+15      56
+16      98
+17      68
+18      78
+19      68
+20      83
+> exam %>% select(class,math,english)
+   class math english
+1      1   50      98
+2      1   60      97
+3      1   45      86
+4      1   30      98
+5      2   25      80
+6      2   50      89
+7      2   80      90
+8      2   90      78
+9      3   20      98
+10     3   50      98
+11     3   65      65
+12     3   45      85
+13     4   46      98
+14     4   48      87
+15     4   75      56
+16     4   58      98
+17     5   65      68
+18     5   80      78
+19     5   89      68
+20     5   78      83
+> exam %>% select(-math)
+   id class english science
+1   1     1      98      50
+2   2     1      97      60
+3   3     1      86      78
+4   4     1      98      58
+5   5     2      80      65
+6   6     2      89      98
+7   7     2      90      45
+8   8     2      78      25
+9   9     3      98      15
+10 10     3      98      45
+11 11     3      65      65
+12 12     3      85      32
+13 13     4      98      65
+14 14     4      87      12
+15 15     4      56      78
+16 16     4      98      65
+17 17     5      68      98
+18 18     5      78      90
+19 19     5      68      87
+20 20     5      83      58
+> exam %>% select(-math,-english)
+   id class science
+1   1     1      50
+2   2     1      60
+3   3     1      78
+4   4     1      58
+5   5     2      65
+6   6     2      98
+7   7     2      45
+8   8     2      25
+9   9     3      15
+10 10     3      45
+11 11     3      65
+12 12     3      32
+13 13     4      65
+14 14     4      12
+15 15     4      78
+16 16     4      65
+17 17     5      98
+18 18     5      90
+19 19     5      87
+20 20     5      58
+> exam %>% filter(class==1) %>% select(english) #filter는 가로로 추출 select는 세로로 추출 
+  english
+1      98
+2      97
+3      86
+4      98
+> exam %>% 
++ filter(class==1) %>% 
++ select(english)
+  english
+1      98
+2      97
+3      86
+4      98
+> exam %>% 
++ select(id,math) %>% 
++ head()
+  id math
+1  1   50
+2  2   60
+3  3   45
+4  4   30
+5  5   25
+6  6   50
+> exam %>% 
++ select(id,math) %>% 
++ head(10)
+   id math
+1   1   50
+2   2   60
+3   3   45
+4   4   30
+5   5   25
+6   6   50
+7   7   80
+8   8   90
+9   9   20
+10 10   50
+> #filter는 가로방향에서 select는 세로방향으로 뽑는다!
+> exam %>% arrange(math)
+   id class math english science
+1   9     3   20      98      15
+2   5     2   25      80      65
+3   4     1   30      98      58
+4   3     1   45      86      78
+5  12     3   45      85      32
+6  13     4   46      98      65
+7  14     4   48      87      12
+8   1     1   50      98      50
+9   6     2   50      89      98
+10 10     3   50      98      45
+11 16     4   58      98      65
+12  2     1   60      97      60
+13 11     3   65      65      65
+14 17     5   65      68      98
+15 15     4   75      56      78
+16 20     5   78      83      58
+17  7     2   80      90      45
+18 18     5   80      78      90
+19 19     5   89      68      87
+20  8     2   90      78      25
+> exam %>% arrange(desc(math))
+   id class math english science
+1   8     2   90      78      25
+2  19     5   89      68      87
+3   7     2   80      90      45
+4  18     5   80      78      90
+5  20     5   78      83      58
+6  15     4   75      56      78
+7  11     3   65      65      65
+8  17     5   65      68      98
+9   2     1   60      97      60
+10 16     4   58      98      65
+11  1     1   50      98      50
+12  6     2   50      89      98
+13 10     3   50      98      45
+14 14     4   48      87      12
+15 13     4   46      98      65
+16  3     1   45      86      78
+17 12     3   45      85      32
+18  4     1   30      98      58
+19  5     2   25      80      65
+20  9     3   20      98      15
+> exam %>% arrange(class,math)
+   id class math english science
+1   4     1   30      98      58
+2   3     1   45      86      78
+3   1     1   50      98      50
+4   2     1   60      97      60
+5   5     2   25      80      65
+6   6     2   50      89      98
+7   7     2   80      90      45
+8   8     2   90      78      25
+9   9     3   20      98      15
+10 12     3   45      85      32
+11 10     3   50      98      45
+12 11     3   65      65      65
+13 13     4   46      98      65
+14 14     4   48      87      12
+15 16     4   58      98      65
+16 15     4   75      56      78
+17 17     5   65      68      98
+18 20     5   78      83      58
+19 18     5   80      78      90
+20 19     5   89      68      87
+> #class로 한번 정렬한 뒤, math로 다시 한번 정렬
+> exam %>% 
++ mutate(total=math+english+science) %>% 
++ head()
+  id class math english science total
+1  1     1   50      98      50   198
+2  2     1   60      97      60   217
+3  3     1   45      86      78   209
+4  4     1   30      98      58   186
+5  5     2   25      80      65   170
+6  6     2   50      89      98   237
+> exam %>% 
++ mutate(total=math+english+science, mean=(math+english+science)/3) %>% 
++ head()
+  id class math english science total     mean
+1  1     1   50      98      50   198 66.00000
+2  2     1   60      97      60   217 72.33333
+3  3     1   45      86      78   209 69.66667
+4  4     1   30      98      58   186 62.00000
+5  5     2   25      80      65   170 56.66667
+6  6     2   50      89      98   237 79.00000
+> exam %>% 
++ mutate(test=ifelse(science>=60,"pass","fail")) %>% 
++ head()
+  id class math english science test
+1  1     1   50      98      50 fail
+2  2     1   60      97      60 pass
+3  3     1   45      86      78 pass
+4  4     1   30      98      58 fail
+5  5     2   25      80      65 pass
+6  6     2   50      89      98 pass
+> exam %>% 
++ mutate(total=math+english+science) %>% 
++ arrange(total)
+   id class math english science total
+1   9     3   20      98      15   133
+2  14     4   48      87      12   147
+3  12     3   45      85      32   162
+4   5     2   25      80      65   170
+5   4     1   30      98      58   186
+6   8     2   90      78      25   193
+7  10     3   50      98      45   193
+8  11     3   65      65      65   195
+9   1     1   50      98      50   198
+10  3     1   45      86      78   209
+11 13     4   46      98      65   209
+12 15     4   75      56      78   209
+13  7     2   80      90      45   215
+14  2     1   60      97      60   217
+15 20     5   78      83      58   219
+16 16     4   58      98      65   221
+17 17     5   65      68      98   231
+18  6     2   50      89      98   237
+19 19     5   89      68      87   244
+20 18     5   80      78      90   248
+> exam %>% summarise(mean_math=mean(math))
+  mean_math
+1     57.45
+> #mutate와 비슷한 역할summarise
+> exam %>% 
++ group_by(class) %>% 
++ summarise(mean_math=mean(Math))
+# A tibble: 5 x 2
+  class mean_math
+  <int>     <dbl>
+1     1        NA
+2     2        NA
+3     3        NA
+4     4        NA
+5     5        NA
+Warning messages:
+1: In mean.default(Math) :
+  argument is not numeric or logical: returning NA
+2: In mean.default(Math) :
+  argument is not numeric or logical: returning NA
+3: In mean.default(Math) :
+  argument is not numeric or logical: returning NA
+4: In mean.default(Math) :
+  argument is not numeric or logical: returning NA
+5: In mean.default(Math) :
+  argument is not numeric or logical: returning NA
+> exam %>% 
++     + group_by(class) %>% summarise(mean_math=mean(math))
+Error in UseMethod("group_by_") : 
+  no applicable method for 'group_by_' applied to an object of class "function"
+> exam %>% 
++   group_by(class) %>%                   # class별로 분리
++   summarise(mean_math = mean(math),     # math 평균
++             sum_math = sum(math),       # math 합계
++             median_math = median(math), # math 중앙값
++             n = n())                    # 학생 수
+# A tibble: 5 x 5
+  class mean_math sum_math median_math     n
+  <int>     <dbl>    <int>       <dbl> <int>
+1     1      46.2      185        47.5     4
+2     2      61.2      245        65       4
+3     3      45        180        47.5     4
+4     4      56.8      227        53       4
+5     5      78        312        79       4
+> exam %>% 
++   group_by(class) %>%                   # class별로 분리
++   summarise(mean_math = mean(math))     # math 평균 산출
+# A tibble: 5 x 2
+  class mean_math
+  <int>     <dbl>
+1     1      46.2
+2     2      61.2
+3     3      45  
+4     4      56.8
+5     5      78  
+> mpg %>% 
++ group_by(manufacturer,drv) %>% 
++ summarise(mean_cty=mean(cty)) %>% 
++ head(10)
+# A tibble: 10 x 3
+# Groups:   manufacturer [5]
+   manufacturer drv   mean_cty
+   <chr>        <chr>    <dbl>
+ 1 audi         4         16.8
+ 2 audi         f         18.9
+ 3 chevrolet    4         12.5
+ 4 chevrolet    f         18.8
+ 5 chevrolet    r         14.1
+ 6 dodge        4         12  
+ 7 dodge        f         15.8
+ 8 ford         4         13.3
+ 9 ford         r         14.8
+10 honda        f         24.4
+> test1 <- data.frame(id=c(1,2,3,4,5),midterm=c(60,80,70,90,85))
+> test2 <- data.frame(id=c(1,2,3,4,5),final=c(70,83,65,95,80))
+> test1
+  id midterm
+1  1      60
+2  2      80
+3  3      70
+4  4      90
+5  5      85
+> test2
+  id final
+1  1    70
+2  2    83
+3  3    65
+4  4    95
+5  5    80
+> total <- left_join(test1, test2, by="id")
+> total
+  id midterm final
+1  1      60    70
+2  2      80    83
+3  3      70    65
+4  4      90    95
+5  5      85    80
+> #두 개 열을 옆으로 붙임
+> name <- data.frame(class=c(1,2,3,4,5), teacher=c("kim", "lee", "park", "choi", "jung"))
+> name
+  class teacher
+1     1     kim
+2     2     lee
+3     3    park
+4     4    choi
+5     5    jung
+> exam_new <- left_join(exam, name, by="class")
+> exam_new
+   id class math english science teacher
+1   1     1   50      98      50     kim
+2   2     1   60      97      60     kim
+3   3     1   45      86      78     kim
+4   4     1   30      98      58     kim
+5   5     2   25      80      65     lee
+6   6     2   50      89      98     lee
+7   7     2   80      90      45     lee
+8   8     2   90      78      25     lee
+9   9     3   20      98      15    park
+10 10     3   50      98      45    park
+11 11     3   65      65      65    park
+12 12     3   45      85      32    park
+13 13     4   46      98      65    choi
+14 14     4   48      87      12    choi
+15 15     4   75      56      78    choi
+16 16     4   58      98      65    choi
+17 17     5   65      68      98    jung
+18 18     5   80      78      90    jung
+19 19     5   89      68      87    jung
+20 20     5   78      83      58    jung
+> group_a <- data.frame(id=c(1,2,3,4,5), test=c(60,80,70,90,85))
+> group_b <- data.frame(id=c(6,7,8,9,10), test =c(70,83,65,95,80))
+> group_a
+  id test
+1  1   60
+2  2   80
+3  3   70
+4  4   90
+5  5   85
+> group_b
+  id test
+1  6   70
+2  7   83
+3  8   65
+4  9   95
+5 10   80
+> group_all <- bind_rows(group_a, group_b)
+> group_all
+   id test
+1   1   60
+2   2   80
+3   3   70
+4   4   90
+5   5   85
+6   6   70
+7   7   83
+8   8   65
+9   9   95
+10 10   80
+> ##혼자서 해보기
+> fuel <- data.frame(fl=c("c","d","e","p","r"), price_fl=c(2.35, 2.38,2.11,2.76,2.22), stringsAsFactors=F)
+> fuel
+  fl price_fl
+1  c     2.35
+2  d     2.38
+3  e     2.11
+4  p     2.76
+5  r     2.22
+> mpg <- as.data.frame(ggplot2::mpg)
